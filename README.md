@@ -9,7 +9,7 @@ Windows Terminal Powershell using startship.
 
 2. scoop install windows-terminal
 
-3. [Profile] ()
+3. [Profile] (https://raw.githubusercontent.com/hardyweb/myDotConfig/main/%24profile%20power%20shell )
 
 4. scoop install neovim-nightly
 
@@ -23,7 +23,8 @@ Linux Terminal
 
 3. Fish 
 
-4. Qutebrowser [config] ()
+4. Qutebrowser [config] (https://raw.githubusercontent.com/hardyweb/myDotConfig/main/config.py) 
+
 
 
 Window Tiling Manager 
@@ -46,7 +47,7 @@ apt-get install ninja-build gettext libtool libtool-bin autoconf automake cmake 
 
 
 
-wget -o  ~/.config/nvim/init.lua
+wget -o  ~/.config/nvim/init.lua https://raw.githubusercontent.com/hardyweb/myDotConfig/main/init.lua
 
 nvim --headless +PackerInstall +qa
 
