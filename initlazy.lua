@@ -1,5 +1,3 @@
-
-
 local lazypath = vim.fn.stdpath("data") .."/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
 	vim.fn.system({
@@ -22,10 +20,8 @@ vim.g.maplocalleader = ' '
 vim.g.user_emmet_leader_key=','
 
 
-local use = require('packer').use
 require('lazy').setup({
-
-  'wbthomason/packer.nvim', -- Package manager
+--  'wbthomason/packer.nvim', -- Package manager
   'tpope/vim-fugitive', -- Git commands in nvim
   'tpope/vim-rhubarb', -- Fugitive-companion to interact with github
   'tpope/vim-commentary', -- "gc" to comment visual regions/lines
@@ -44,13 +40,16 @@ require('lazy').setup({
   'nvim-treesitter/nvim-treesitter-textobjects',
   'neovim/nvim-lspconfig', -- Collection of configurations for built-in LSP client
   --'hrsh7th/nvim-compe', -- Autocompletion plugin
-  'williamboman/nvim-lsp-installer',
+  --'williamboman/nvim-lsp-installer',
+   'williamboman/mason.nvim',
+    'williamboman/mason-lspconfig.nvim',
   'ray-x/go.nvim',
   'ray-x/guihua.lua',
 
  ({
    "hrsh7th/nvim-cmp",
-    requires = {
+     dependencies= {
+
    "hrsh7th/cmp-buffer",
    "hrsh7th/cmp-nvim-lsp",
    "hrsh7th/cmp-path",
@@ -75,12 +74,9 @@ require('lazy').setup({
  -- 'jiangmiao/auto-pairs',
 'windwp/nvim-autopairs',	
  {'akinsho/flutter-tools.nvim', dependencies = 'nvim-lua/plenary.nvim'},
-
   'Neevash/awesome-flutter-snippets',
-  
- 
- "rafamadriz/friendly-snippets",
- {'nvim-telescope/telescope-fzf-native.nvim', run ='make',cond= vim.fn.executable 'make' ==1},
+
+ {'nvim-telescope/telescope-fzf-native.nvim', build ='make',cond= vim.fn.executable 'make' ==1},
 'fatih/vim-go', 
 
 })
@@ -128,8 +124,6 @@ vim.g.lightline = {
   active = { left = { { 'mode', 'paste' }, { 'gitbranch', 'readonly', 'filename', 'modified' } } },
   component_function = { gitbranch = 'fugitive#head' },
 }
-
-
 
 --multicursor
 
@@ -206,6 +200,7 @@ vim.api.nvim_exec(
 -- Y yank until the end of line
 vim.api.nvim_set_keymap('n', 'Y', 'y$', { noremap = true })
 
+
 -- LSP settings
 local nvim_lsp = require 'lspconfig'
 local on_attach = function(client, bufnr)
@@ -235,17 +230,47 @@ local on_attach = function(client, bufnr)
 
 
 end
-
+local servers = { clangd={} ,
+         rust_analyzer={} ,
+	 pyright={}, 
+	 tsserver={},
+	 cssls={},bashls={},
+	 html={},
+	 jsonls={},
+	 intelephense={}
+ }
 local capabilities = vim.lsp.protocol.make_client_capabilities()
+
+capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+
+require("mason").setup()
+
+local mason_lspconfig = require 'mason-lspconfig'
+
+mason_lspconfig.setup{
+	ensure_installed = vim.tbl_keys(servers),
+}
+--require("mason-lspconfig").setup()
+mason_lspconfig.setup_handlers{
+
+	function(server_name)
+	require('lspconfig')[server_name].setup{
+			capabilities = capabilities,
+			on_attach = on_attach, 
+			settings = servers[server_name],
+	}
+ 	end,
+}
 capabilities.textDocument.completion.completionItem.snippetSupport = true
 
 -- Enable the following language servers
-local servers = { 'clangd', 'rust_analyzer', 'pyright', 'tsserver','cssls','bashls','html','jsonls','intelephense','gopls' }
+
+
 for _, lsp in ipairs(servers) do
-  nvim_lsp[lsp].setup {
+ nvim_lsp[lsp].setup {
     on_attach = on_attach,
-    capabilities = capabilities,
-  }
+  capabilities = capabilities,
+}
 end
 
 -- Example custom server
@@ -443,4 +468,3 @@ cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done({ map_char = {tex = "
 
 require("flutter-tools").setup{} -- use defaults
 
-require('go').setup()
