@@ -1,3 +1,6 @@
+" This init use in old plug manager 
+" https://github.com/junegunn/vim-plug
+
 call plug#begin("~/.local/share/nvim/plugged")
 
 " Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
