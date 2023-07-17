@@ -1,3 +1,6 @@
+-- this ini use packer manager 
+-- https://github.com/wbthomason/packer.nvim
+
 -- Install packer
 local install_path = vim.fn.stdpath 'data' .. '/site/pack/packer/start/packer.nvim'
 
