@@ -24,8 +24,17 @@ set -g status-position top
 set -g @plugin 'omerxx/tmux-sessionx'
 set -g @sessionx-bind 'o'
 
+bind-key R display-popup -w 90% -h 80% -E "lf"
+
+bind-key H display-popup -E "htop"
+
+bind-key T display-popup -w 80% -h 60% -E "fish"
+ 
 set -g @sessionx-x-path '~/dotfiles'
 set -g @sessionx-window-height '85%'
 set -g @sessionx-window-widht '75%'
+
+
+
 
 run '~/.tmux/plugins/tpm/tpm'
